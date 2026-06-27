@@ -1,15 +1,19 @@
 #ifndef __ARES_DATAENGINE_MQH__
 #define __ARES_DATAENGINE_MQH__
 #include "../../Core/Types.mqh"
-#include "CandleBuffer.mqh"
-class CDataEngine{
+#include "DataManager.mqh"
+
+class CDataEngine
+{
 private:
- ENUM_ENGINE_STATE m_state;
- CCandleBuffer m_buffer;
+ CDataManager m_manager;
+ bool m_initialized;
 public:
- CDataEngine(){m_state=ENGINE_CREATED;}
- bool Initialize(){m_state=ENGINE_READY;return(true);}
- bool PushBar(const MqlRates &r){
+ CDataEngine(){m_initialized=false;}
+ bool Initialize(const int capacity=5000){m_initialized=m_manager.Initialize(capacity);return m_initialized;}
+ bool PushBar(const MqlRates &r)
+ {
+   if(!m_initialized) return false;
    SCandle c;
    c.Time=r.time;
    c.Open=r.open;
@@ -17,8 +21,11 @@ public:
    c.Low=r.low;
    c.Close=r.close;
    c.TickVolume=r.tick_volume;
-   return m_buffer.Add(c);
+   return m_manager.Push(c);
  }
- int Count()const{return m_buffer.Count();}
+ int Bars() const{return m_manager.Bars();}
+ bool Last(SCandle &c) const{return m_manager.Last(c);}
+ bool Get(const int i,SCandle &c) const{return m_manager.Get(i,c);}
+ void Reset(){m_manager.Clear();m_initialized=false;}
 };
 #endif
