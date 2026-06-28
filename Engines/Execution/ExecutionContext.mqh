@@ -1,7 +1,7 @@
 #ifndef __ARES_EXECUTIONCONTEXT_MQH__
 #define __ARES_EXECUTIONCONTEXT_MQH__
 
-#include "../Portfolio/PortfolioContext.mqh"
+#include "../PortFolio/PortfolioContext.mqh"
 #include "../Decision/DecisionContext.mqh"
 
 struct SExecutionContext

@@ -13,6 +13,9 @@ private:
 public:
    bool Initialize()
    {
+      if(!m_engines.Initialize())
+         return false;
+
       return m_runner.Initialize(m_engines);
    }
 

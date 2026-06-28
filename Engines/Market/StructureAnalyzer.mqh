@@ -1,20 +1,17 @@
 #ifndef __ARES_STRUCTUREANALYZER_MQH__
 #define __ARES_STRUCTUREANALYZER_MQH__
 
+#include "SwingDetector_v2.mqh"
+
 // ============================================================================
-// ARES - StructureAnalyzer.mqh (Skeleton V2)
-// Ubicación:
-// ARES/Engines/Market/StructureAnalyzer.mqh
-//
-// NOTA:
-// Esta versión añade la infraestructura para memoria estructural (HH/HL/LH/LL)
-// sin cambiar la responsabilidad principal del analizador.
-// Debe adaptarse a las interfaces existentes del proyecto.
+// ARES - StructureAnalyzer.mqh
+// Detecta y clasifica la estructura de mercado (HH / HL / LH / LL).
+// Usa CSwingDetector internamente para identificar swings en el DataEngine.
 // ============================================================================
 
-enum EStructureType
+enum EStructureClass
 {
-   STRUCTURE_NONE = 0,
+   STRUCTURE_UNKNOWN = 0,
    STRUCTURE_HH,
    STRUCTURE_HL,
    STRUCTURE_LH,
@@ -24,11 +21,12 @@ enum EStructureType
 class CStructureAnalyzer
 {
 private:
-   double m_lastHigh;
-   double m_prevHigh;
-   double m_lastLow;
-   double m_prevLow;
-   EStructureType m_lastStructure;
+   CSwingDetector   m_swing;
+   double           m_lastHigh;
+   double           m_prevHigh;
+   double           m_lastLow;
+   double           m_prevLow;
+   EStructureClass  m_lastStructure;
 
 public:
    CStructureAnalyzer()
@@ -36,45 +34,71 @@ public:
       Reset();
    }
 
+   bool Initialize(CDataEngine &data)
+   {
+      Reset();
+      return m_swing.Initialize(data);
+   }
+
    void Reset()
    {
-      m_lastHigh=0.0;
-      m_prevHigh=0.0;
-      m_lastLow=0.0;
-      m_prevLow=0.0;
-      m_lastStructure=STRUCTURE_NONE;
+      m_lastHigh      = 0.0;
+      m_prevHigh      = 0.0;
+      m_lastLow       = 0.0;
+      m_prevLow       = 0.0;
+      m_lastStructure = STRUCTURE_UNKNOWN;
+   }
+
+   // Analiza el bar en 'index' buscando un swing point.
+   // Devuelve true si se registró un nuevo HH/HL/LH/LL.
+   bool Analyze(const int index)
+   {
+      ESwingType swing = m_swing.Detect(index);
+
+      if(swing == SWING_HIGH)
+      {
+         RegisterHigh(m_swing.LastSwingHigh());
+         return true;
+      }
+
+      if(swing == SWING_LOW)
+      {
+         RegisterLow(m_swing.LastSwingLow());
+         return true;
+      }
+
+      return false;
    }
 
    void RegisterHigh(const double price)
    {
-      m_prevHigh=m_lastHigh;
-      m_lastHigh=price;
+      m_prevHigh = m_lastHigh;
+      m_lastHigh = price;
 
-      if(m_prevHigh!=0.0)
-         m_lastStructure=(m_lastHigh>m_prevHigh)?STRUCTURE_HH:STRUCTURE_LH;
+      if(m_prevHigh != 0.0)
+         m_lastStructure = (m_lastHigh > m_prevHigh) ? STRUCTURE_HH : STRUCTURE_LH;
    }
 
    void RegisterLow(const double price)
    {
-      m_prevLow=m_lastLow;
-      m_lastLow=price;
+      m_prevLow = m_lastLow;
+      m_lastLow = price;
 
-      if(m_prevLow!=0.0)
-         m_lastStructure=(m_lastLow>m_prevLow)?STRUCTURE_HL:STRUCTURE_LL;
+      if(m_prevLow != 0.0)
+         m_lastStructure = (m_lastLow > m_prevLow) ? STRUCTURE_HL : STRUCTURE_LL;
    }
 
-   EStructureType LastStructure() const { return m_lastStructure; }
+   EStructureClass LastStructure() const { return m_lastStructure; }
 
-   double LastHigh() const { return m_lastHigh; }
+   double LastHigh()     const { return m_lastHigh; }
    double PreviousHigh() const { return m_prevHigh; }
+   double LastLow()      const { return m_lastLow; }
+   double PreviousLow()  const { return m_prevLow; }
 
-   double LastLow() const { return m_lastLow; }
-   double PreviousLow() const { return m_prevLow; }
-
-   bool IsHH() const { return m_lastStructure==STRUCTURE_HH; }
-   bool IsHL() const { return m_lastStructure==STRUCTURE_HL; }
-   bool IsLH() const { return m_lastStructure==STRUCTURE_LH; }
-   bool IsLL() const { return m_lastStructure==STRUCTURE_LL; }
+   bool IsHH() const { return m_lastStructure == STRUCTURE_HH; }
+   bool IsHL() const { return m_lastStructure == STRUCTURE_HL; }
+   bool IsLH() const { return m_lastStructure == STRUCTURE_LH; }
+   bool IsLL() const { return m_lastStructure == STRUCTURE_LL; }
 };
 
 #endif

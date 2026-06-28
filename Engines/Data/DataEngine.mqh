@@ -23,6 +23,11 @@ public:
    c.TickVolume=r.tick_volume;
    return m_manager.Push(c);
  }
+ bool PushCandle(const SCandle &c)
+ {
+   if(!m_initialized) return false;
+   return m_manager.Push(c);
+ }
  int Bars() const{return m_manager.Bars();}
  bool Last(SCandle &c) const{return m_manager.Last(c);}
  bool Get(const int i,SCandle &c) const{return m_manager.Get(i,c);}

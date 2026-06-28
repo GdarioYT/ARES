@@ -1,27 +1,27 @@
 #ifndef __ARES_SYSTEMCONTEXT_MQH__
 #define __ARES_SYSTEMCONTEXT_MQH__
 
-#include "../Market/MarketContext.mqh"
-#include "../Pattern/PatternResult.mqh"
-#include "../Intelligence/IntelligenceContext.mqh"
-#include "../Decision/DecisionContext.mqh"
-#include "../Guardian/GuardianContext.mqh"
-#include "../Portfolio/PortfolioContext.mqh"
-#include "../Execution/ExecutionReport.mqh"
-#include "../Learning/LearningContext.mqh"
-#include "../Audit/AuditContext.mqh"
+#include "../Engines/Market/MarketContext.mqh"
+#include "../Engines/Pattern/PatternResult.mqh"
+#include "../Engines/Intelligence/IntelligenceContext.mqh"
+#include "../Engines/Decision/DecisionContext.mqh"
+#include "../Engines/Guardian/GuardianContext.mqh"
+#include "../Engines/PortFolio/PortfolioContext.mqh"
+#include "../Engines/Execution/ExecutionReport.mqh"
+#include "../Engines/Learning/LearningContext.mqh"
+#include "../Engines/Audit/AuditContext.mqh"
 
 struct SSystemContext
 {
-   SMarketContext market;
-   SPatternResult pattern;
+   SMarketContext     market;
+   SPatternResult     pattern;
    SIntelligenceContext intelligence;
-   SDecisionContext decision;
-   SGuardianContext guardian;
-   SPortfolioContext portfolio;
-   SExecutionReport execution;
-   SLearningContext learning;
-   SAuditContext audit;
+   SDecisionContext   decision;
+   SGuardianContext   guardian;
+   SPortfolioContext  portfolio;
+   SExecutionReport   execution;
+   SLearningContext   learning;
+   SAuditContext      audit;
 
    void Reset()
    {
