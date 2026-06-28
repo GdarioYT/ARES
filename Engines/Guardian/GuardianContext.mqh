@@ -6,28 +6,26 @@
 enum EGuardianStatus
 {
    GUARDIAN_ALLOW=0,
-   GUARDIAN_BLOCK,
-   GUARDIAN_PAUSE
+   GUARDIAN_BLOCK
 };
 
 struct SGuardianContext
 {
    SDecisionContext decision;
    EGuardianStatus status;
-   double riskScore;
+   
+   double dailyDrawdown;
+   double maxDailyDrawdown;
+   
+   bool newsFilterActive;
 
    void Reset()
    {
       decision.Reset();
       status=GUARDIAN_ALLOW;
-      riskScore=0.0;
-   }
-
-   void Update(const SDecisionContext &ctx)
-   {
-      decision=ctx;
-      riskScore=0.0;
-      status=GUARDIAN_ALLOW;
+      dailyDrawdown=0.0;
+      maxDailyDrawdown=0.0;
+      newsFilterActive=false;
    }
 };
 

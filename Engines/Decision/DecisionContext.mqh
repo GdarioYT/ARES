@@ -17,11 +17,23 @@ struct SDecisionContext
    EIntelligenceGrade grade;
    EDecisionAction action;
 
+   // Execution specifics
+   double entryPrice;
+   double stopLoss;
+   double takeProfit;
+   double lotSize;
+   double riskRewardRatio;
+
    void Reset()
    {
       intelligence.Reset();
       grade=INTELLIGENCE_REJECT;
       action=DECISION_NONE;
+      entryPrice = 0.0;
+      stopLoss = 0.0;
+      takeProfit = 0.0;
+      lotSize = 0.0;
+      riskRewardRatio = 0.0;
    }
 
    void Update(const SIntelligenceContext &ctx,

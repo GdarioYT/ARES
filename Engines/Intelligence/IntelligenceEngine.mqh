@@ -10,7 +10,7 @@ private:
    CIntelligenceEvaluator m_evaluator;
 
 public:
-   bool Analyze(const SIntelligenceContext &context,
+   bool Analyze(SIntelligenceContext &context,
                 EIntelligenceGrade &grade)
    {
       grade=m_evaluator.Evaluate(context);
