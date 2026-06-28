@@ -19,6 +19,8 @@ struct SPatternResult
    EPatternStrength strength;
    double score;
    datetime timestamp;
+   double priceTop;
+   double priceBottom;
 
    void Reset()
    {
@@ -28,6 +30,8 @@ struct SPatternResult
       strength = PATTERN_STRENGTH_NONE;
       score = 0.0;
       timestamp = 0;
+      priceTop = 0.0;
+      priceBottom = 0.0;
    }
 };
 

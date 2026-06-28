@@ -15,6 +15,13 @@ private:
    CPatternScore     m_score;
 
 public:
+   bool Initialize(CDataEngine &data)
+   {
+      m_detector.Initialize(data);
+      return true;
+   }
+
+public:
    bool Analyze(const SPatternContext &context,
                 SPatternResult &result)
    {
@@ -40,6 +47,8 @@ public:
          result.strength=PATTERN_STRENGTH_WEAK;
 
       result.score=m_score.Value();
+      result.priceTop=m_detector.PriceTop();
+      result.priceBottom=m_detector.PriceBottom();
       result.timestamp=TimeCurrent();
 
       return true;

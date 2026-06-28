@@ -38,6 +38,9 @@ public:
       if(!m_market.Initialize(m_data))
          return false;
 
+      if(!m_pattern.Initialize(m_data))
+         return false;
+
       return true;
    }
 
