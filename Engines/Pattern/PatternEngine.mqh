@@ -37,7 +37,7 @@ public:
 
       result.detected=true;
       result.pattern=m_detector.LastPattern();
-      result.direction=context.direction;
+      result.direction=m_detector.LastDirection();
 
       if(m_score.Value()>=0.90)
          result.strength=PATTERN_STRENGTH_STRONG;

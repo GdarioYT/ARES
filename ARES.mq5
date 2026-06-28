@@ -52,7 +52,8 @@ void OnTick()
    }
    else
    {
-      App.Engines().Data().PushBar(r[0]);
+      App.Engines().Data().PushBar(r[1]); // Actualiza la vela recién cerrada
+      App.Engines().Data().PushBar(r[0]); // Añade la nueva vela abierta
    }
 
    App.Tick();
