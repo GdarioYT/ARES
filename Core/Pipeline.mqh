@@ -115,11 +115,12 @@ public:
             if(!iCtx.displacementValid) iCtx.displacementValid = true; // Fallback prueba
 
             // FASE 5: Mitigación y PD
+            // Al momento de la detección inicial, el bloque es nuevo, por tanto NO está mitigado
+            iCtx.isMitigated = false;
+            
             if(pResult.direction == PATTERN_LONG) {
-                iCtx.isMitigated = m_mitigation.IsBullishMitigated(pResult.priceTop, currentCandle.Low);
                 iCtx.isPremiumDiscount = m_pd.IsDiscount();
             } else {
-                iCtx.isMitigated = m_mitigation.IsBearishMitigated(pResult.priceBottom, currentCandle.High);
                 iCtx.isPremiumDiscount = m_pd.IsPremium();
             }
 
