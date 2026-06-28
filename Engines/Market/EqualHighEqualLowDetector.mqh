@@ -79,7 +79,7 @@ public:
       return false;
    }
 
-   const SEqualLevel &Last() const { return m_last; }
+   SEqualLevel Last() const { return m_last; }
    bool HasEqualLevel() const { return m_last.valid; }
 };
 

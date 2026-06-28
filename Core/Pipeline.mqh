@@ -91,7 +91,7 @@ public:
 
             // FASE 2: Estructura
             iCtx.structureValid = (isBullishBOS || isBearishBOS || isBullishCHOCH || isBearishCHOCH);
-            if(!iCtx.structureValid && m_manager.Market().Structure().LastStructure() != STRUCTURE_NONE) {
+            if(!iCtx.structureValid && m_manager.Market().Structure().LastStructure() != STRUCTURE_UNDEFINED) {
                 iCtx.structureValid = true; // Permite operar a favor del rango estructural activo
             }
 

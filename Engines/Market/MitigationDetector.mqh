@@ -1,7 +1,7 @@
 #ifndef __ARES_MITIGATIONDETECTOR_MQH__
 #define __ARES_MITIGATIONDETECTOR_MQH__
 
-#include "../Core/Types.mqh"
+
 
 class CMitigationDetector
 {
