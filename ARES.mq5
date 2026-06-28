@@ -37,11 +37,24 @@ void OnTick()
    MqlRates r[];
    ArraySetAsSeries(r, true);
 
-   // Necesitamos al menos 3 barras para detectar swing points
    if(CopyRates(_Symbol, InpTimeframe, 0, 3, r) < 3)
       return;
 
-   App.Engines().Data().PushBar(r[0]);
+   if(App.Engines().Data().Bars() == 0)
+   {
+      MqlRates history[];
+      ArraySetAsSeries(history, true);
+      int copied = CopyRates(_Symbol, InpTimeframe, 0, InpHistoryBars, history);
+      for(int i = copied - 1; i >= 0; i--)
+      {
+         App.Engines().Data().PushBar(history[i]);
+      }
+   }
+   else
+   {
+      App.Engines().Data().PushBar(r[0]);
+   }
+
    App.Tick();
 }
 

@@ -36,6 +36,13 @@ public:
    bool Update(const int index)
    {
       m_structure.Analyze(index);
+      
+      SStructureState sState;
+      sState.Type = m_structure.LastStructure();
+      sState.PriceHigh = m_structure.LastHigh();
+      sState.PriceLow = m_structure.LastLow();
+      
+      m_bos.Update(sState);
       m_choch.Update();
       return true;
    }

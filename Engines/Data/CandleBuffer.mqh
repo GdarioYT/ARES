@@ -63,6 +63,14 @@ public:
       out=m_data[sz-1];
       return(true);
    }
+
+   bool UpdateLast(const SCandle &candle)
+   {
+      int sz=ArraySize(m_data);
+      if(sz==0) return false;
+      m_data[sz-1] = candle;
+      return true;
+   }
 };
 
 #endif

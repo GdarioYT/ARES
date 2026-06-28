@@ -11,18 +11,30 @@ private:
 public:
  CDataEngine(){m_initialized=false;}
  bool Initialize(const int capacity=5000){m_initialized=m_manager.Initialize(capacity);return m_initialized;}
- bool PushBar(const MqlRates &r)
- {
-   if(!m_initialized) return false;
-   SCandle c;
-   c.Time=r.time;
-   c.Open=r.open;
-   c.High=r.high;
-   c.Low=r.low;
-   c.Close=r.close;
-   c.TickVolume=r.tick_volume;
-   return m_manager.Push(c);
- }
+   bool PushBar(const MqlRates &r)
+   {
+      if(!m_initialized) return false;
+
+      SCandle last;
+      if(m_manager.Last(last) && last.Time == r.time)
+      {
+         SCandle c = last;
+         c.High = MathMax(c.High, r.high);
+         c.Low = MathMin(c.Low, r.low);
+         c.Close = r.close;
+         c.TickVolume += r.tick_volume;
+         return m_manager.UpdateLast(c);
+      }
+
+      SCandle c;
+      c.Time=r.time;
+      c.Open=r.open;
+      c.High=r.high;
+      c.Low=r.low;
+      c.Close=r.close;
+      c.TickVolume=r.tick_volume;
+      return m_manager.Push(c);
+   }
  bool PushCandle(const SCandle &c)
  {
    if(!m_initialized) return false;

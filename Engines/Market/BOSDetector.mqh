@@ -17,6 +17,8 @@ class CBOSDetector
 private:
    CStructureAnalyzer *m_structure;
    SStructureState     m_last;
+   bool                m_newBullishBOS;
+   bool                m_newBearishBOS;
 
 public:
    CBOSDetector()
@@ -32,11 +34,23 @@ public:
    void Reset()
    {
       m_last = SStructureState();
+      m_newBullishBOS = false;
+      m_newBearishBOS = false;
    }
 
    bool Update(const SStructureState &state)
    {
       bool changed = (state.Type != m_last.Type);
+      
+      m_newBullishBOS = false;
+      m_newBearishBOS = false;
+      
+      if(changed)
+      {
+         if(state.Type == STRUCTURE_HH) m_newBullishBOS = true;
+         if(state.Type == STRUCTURE_LL) m_newBearishBOS = true;
+      }
+      
       m_last = state;
       return changed;
    }
@@ -48,14 +62,12 @@ public:
 
    bool IsBullishBOS() const
    {
-      return (m_structure != NULL &&
-              m_structure.LastStructure() == STRUCTURE_HH);
+      return m_newBullishBOS;
    }
 
    bool IsBearishBOS() const
    {
-      return (m_structure != NULL &&
-              m_structure.LastStructure() == STRUCTURE_LL);
+      return m_newBearishBOS;
    }
 };
 

@@ -30,6 +30,11 @@ public:
       return m_series.Last(out);
    }
 
+   bool UpdateLast(const SCandle &candle)
+   {
+      return m_series.UpdateLast(candle);
+   }
+
    bool Get(const int index,SCandle &out) const
    {
       return m_series.Get(index,out);

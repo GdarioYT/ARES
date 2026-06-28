@@ -30,9 +30,16 @@ public:
       return m_buffer.Last(out);
    }
 
+   bool UpdateLast(const SCandle &candle)
+   {
+      return m_buffer.UpdateLast(candle);
+   }
+
    bool Get(const int index,SCandle &out) const
    {
-      return m_buffer.Get(index,out);
+      int count = m_buffer.Count();
+      if(index < 0 || index >= count) return false;
+      return m_buffer.Get(count - 1 - index, out);
    }
 
    void Clear()
