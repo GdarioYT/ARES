@@ -28,14 +28,14 @@ public:
    {
    }
 
-   CEngineManager &Engines()
+   CEngineManager *Engines()
    {
-      return m_engines;
+      return &m_engines;
    }
 
-   CSystemRunner &Runner()
+   CSystemRunner *Runner()
    {
-      return m_runner;
+      return &m_runner;
    }
 };
 

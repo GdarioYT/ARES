@@ -8,51 +8,51 @@ class CCHOCHDetector
 {
 private:
    CStructureAnalyzer *m_structure;
-   EStructureClass     m_previous;
+   EMarketStructure    m_previous;
 
 public:
    CCHOCHDetector()
    {
-      m_structure=NULL;
-      m_previous=STRUCTURE_UNKNOWN;
+      m_structure = NULL;
+      m_previous  = STRUCTURE_UNDEFINED;
    }
 
    bool Initialize(CStructureAnalyzer &structure)
    {
-      m_structure=&structure;
-      m_previous=STRUCTURE_UNKNOWN;
+      m_structure = &structure;
+      m_previous  = STRUCTURE_UNDEFINED;
       return true;
    }
 
    bool Update()
    {
-      if(m_structure==NULL)
+      if(m_structure == NULL)
          return false;
 
-      m_previous=m_structure->LastStructure();
+      m_previous = m_structure->LastStructure();
       return true;
    }
 
    bool IsBullishCHOCH() const
    {
-      if(m_structure==NULL)
+      if(m_structure == NULL)
          return false;
 
-      EStructureClass current=m_structure->LastStructure();
+      EMarketStructure current = m_structure->LastStructure();
 
-      return (m_previous==STRUCTURE_LL || m_previous==STRUCTURE_LH) &&
-             (current==STRUCTURE_HL || current==STRUCTURE_HH);
+      return (m_previous == STRUCTURE_LL || m_previous == STRUCTURE_LH) &&
+             (current    == STRUCTURE_HL || current    == STRUCTURE_HH);
    }
 
    bool IsBearishCHOCH() const
    {
-      if(m_structure==NULL)
+      if(m_structure == NULL)
          return false;
 
-      EStructureClass current=m_structure->LastStructure();
+      EMarketStructure current = m_structure->LastStructure();
 
-      return (m_previous==STRUCTURE_HH || m_previous==STRUCTURE_HL) &&
-             (current==STRUCTURE_LH || current==STRUCTURE_LL);
+      return (m_previous == STRUCTURE_HH || m_previous == STRUCTURE_HL) &&
+             (current    == STRUCTURE_LH || current    == STRUCTURE_LL);
    }
 };
 

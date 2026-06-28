@@ -40,19 +40,19 @@ public:
       return true;
    }
 
-   CStructureAnalyzer &Structure()
+   CStructureAnalyzer *Structure()
    {
-      return m_structure;
+      return &m_structure;
    }
 
-   CBOSDetector &BOS()
+   CBOSDetector *BOS()
    {
-      return m_bos;
+      return &m_bos;
    }
 
-   CCHOCHDetector &CHOCH()
+   CCHOCHDetector *CHOCH()
    {
-      return m_choch;
+      return &m_choch;
    }
 };
 

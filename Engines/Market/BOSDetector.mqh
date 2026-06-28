@@ -41,7 +41,7 @@ public:
       return changed;
    }
 
-   const SStructureState &Last() const
+   SStructureState Last() const
    {
       return m_last;
    }

@@ -8,7 +8,7 @@ struct SMarketSnapshot
    datetime time;
    EMarketBias bias;
    ETrendState trend;
-   EStructureClass structure;
+   EMarketStructure structure;
    ELiquidityEvent liquidity;
    double confidence;
 

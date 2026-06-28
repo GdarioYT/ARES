@@ -41,16 +41,17 @@ public:
       return true;
    }
 
-   CDataEngine         &Data()         { return m_data; }
-   CMarketEngine       &Market()       { return m_market; }
-   CPatternEngine      &Pattern()      { return m_pattern; }
-   CIntelligenceEngine &Intelligence() { return m_intelligence; }
-   CDecisionEngine     &Decision()     { return m_decision; }
-   CGuardianEngine     &Guardian()     { return m_guardian; }
-   CPortfolioEngine    &Portfolio()    { return m_portfolio; }
-   CExecutionEngine    &Execution()    { return m_execution; }
-   CLearningEngine     &Learning()     { return m_learning; }
-   CAuditEngine        &Audit()        { return m_audit; }
+   // MQL5 no permite devolver referencias a miembros — devolvemos punteros
+   CDataEngine         *Data()         { return &m_data; }
+   CMarketEngine       *Market()       { return &m_market; }
+   CPatternEngine      *Pattern()      { return &m_pattern; }
+   CIntelligenceEngine *Intelligence() { return &m_intelligence; }
+   CDecisionEngine     *Decision()     { return &m_decision; }
+   CGuardianEngine     *Guardian()     { return &m_guardian; }
+   CPortfolioEngine    *Portfolio()    { return &m_portfolio; }
+   CExecutionEngine    *Execution()    { return &m_execution; }
+   CLearningEngine     *Learning()     { return &m_learning; }
+   CAuditEngine        *Audit()        { return &m_audit; }
 };
 
 #endif

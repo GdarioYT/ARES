@@ -35,7 +35,7 @@ public:
       return m_pipeline.Execute();
    }
 
-   SSystemContext &Context()
+   SSystemContext Context() const
    {
       return m_context;
    }

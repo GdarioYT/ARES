@@ -7,7 +7,7 @@
 
 struct SMarketContext
 {
-   EStructureClass structure;
+   EMarketStructure structure;
    ETrendState trend;
    ELiquidityEvent liquidity;
 
@@ -22,7 +22,7 @@ struct SMarketContext
 
    void Reset()
    {
-      structure=STRUCTURE_UNKNOWN;
+      structure=STRUCTURE_UNDEFINED;
       trend=TREND_UNKNOWN;
       liquidity=LIQUIDITY_NONE;
 

@@ -40,7 +40,7 @@ public:
          m_bias = MARKET_BIAS_NEUTRAL;
    }
 
-   const SMarketContext &Context() const
+   SMarketContext Context() const
    {
       return m_context;
    }

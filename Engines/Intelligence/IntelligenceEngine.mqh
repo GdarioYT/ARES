@@ -17,9 +17,9 @@ public:
       return grade!=INTELLIGENCE_REJECT;
    }
 
-   const CIntelligenceEvaluator &Evaluator() const
+   const CIntelligenceEvaluator *Evaluator() const
    {
-      return m_evaluator;
+      return &m_evaluator;
    }
 };
 

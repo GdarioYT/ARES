@@ -3,6 +3,14 @@
 
 #include "../Market/MarketSnapshot.mqh"
 
+enum EPatternType
+{
+   PATTERN_TYPE_NONE = 0,
+   PATTERN_TYPE_FVG,
+   PATTERN_TYPE_OB,
+   PATTERN_TYPE_LIQUIDITY_SWEEP
+};
+
 enum EPatternDirection
 {
    PATTERN_NONE = 0,

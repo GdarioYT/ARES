@@ -1,22 +1,15 @@
 #ifndef __ARES_STRUCTUREANALYZER_MQH__
 #define __ARES_STRUCTUREANALYZER_MQH__
 
+#include "StructureState.mqh"
 #include "SwingDetector_v2.mqh"
 
 // ============================================================================
 // ARES - StructureAnalyzer.mqh
 // Detecta y clasifica la estructura de mercado (HH / HL / LH / LL).
-// Usa CSwingDetector internamente para identificar swings en el DataEngine.
+// Usa EMarketStructure (de StructureState.mqh) como tipo canónico para que
+// no haya conflicto de identificadores en el espacio de nombres global MQL5.
 // ============================================================================
-
-enum EStructureClass
-{
-   STRUCTURE_UNKNOWN = 0,
-   STRUCTURE_HH,
-   STRUCTURE_HL,
-   STRUCTURE_LH,
-   STRUCTURE_LL
-};
 
 class CStructureAnalyzer
 {
@@ -26,7 +19,7 @@ private:
    double           m_prevHigh;
    double           m_lastLow;
    double           m_prevLow;
-   EStructureClass  m_lastStructure;
+   EMarketStructure m_lastStructure;
 
 public:
    CStructureAnalyzer()
@@ -46,7 +39,7 @@ public:
       m_prevHigh      = 0.0;
       m_lastLow       = 0.0;
       m_prevLow       = 0.0;
-      m_lastStructure = STRUCTURE_UNKNOWN;
+      m_lastStructure = STRUCTURE_UNDEFINED;
    }
 
    // Analiza el bar en 'index' buscando un swing point.
@@ -88,7 +81,7 @@ public:
          m_lastStructure = (m_lastLow > m_prevLow) ? STRUCTURE_HL : STRUCTURE_LL;
    }
 
-   EStructureClass LastStructure() const { return m_lastStructure; }
+   EMarketStructure LastStructure() const { return m_lastStructure; }
 
    double LastHigh()     const { return m_lastHigh; }
    double PreviousHigh() const { return m_prevHigh; }
