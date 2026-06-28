@@ -31,10 +31,10 @@ public:
       if(m_executor==NULL || m_execution==NULL)
          return false;
 
-      if(!m_executor->Prepare(plan,context))
+      if(!m_executor.Prepare(plan,context))
          return false;
 
-      return m_execution->CanExecute(context);
+      return m_execution.CanExecute(context);
    }
 };
 

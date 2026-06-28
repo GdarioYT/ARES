@@ -49,13 +49,13 @@ public:
    bool IsBullishBOS() const
    {
       return (m_structure != NULL &&
-              m_structure->LastStructure() == STRUCTURE_HH);
+              m_structure.LastStructure() == STRUCTURE_HH);
    }
 
    bool IsBearishBOS() const
    {
       return (m_structure != NULL &&
-              m_structure->LastStructure() == STRUCTURE_LL);
+              m_structure.LastStructure() == STRUCTURE_LL);
    }
 };
 

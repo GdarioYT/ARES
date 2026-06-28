@@ -41,7 +41,7 @@ void OnTick()
    if(CopyRates(_Symbol, InpTimeframe, 0, 3, r) < 3)
       return;
 
-   App.Engines()->Data()->PushBar(r[0]);
+   App.Engines().Data().PushBar(r[0]);
    App.Tick();
 }
 

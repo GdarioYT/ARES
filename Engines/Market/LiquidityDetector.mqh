@@ -42,14 +42,14 @@ public:
       if(m_structure==NULL)
          return m_lastEvent;
 
-      if(m_structure->LastHigh()>0.0 &&
-         high>m_structure->LastHigh())
+      if(m_structure.LastHigh()>0.0 &&
+         high>m_structure.LastHigh())
       {
          m_lastEvent=LIQUIDITY_SWEEP_HIGH;
       }
 
-      if(m_structure->LastLow()>0.0 &&
-         low<m_structure->LastLow())
+      if(m_structure.LastLow()>0.0 &&
+         low<m_structure.LastLow())
       {
          m_lastEvent=LIQUIDITY_SWEEP_LOW;
       }

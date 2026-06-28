@@ -43,13 +43,13 @@ public:
       if(m_bos==NULL || m_choch==NULL)
          return TREND_UNKNOWN;
 
-      if(m_choch->IsBullishCHOCH())
+      if(m_choch.IsBullishCHOCH())
          m_state=TREND_TRANSITION;
-      else if(m_choch->IsBearishCHOCH())
+      else if(m_choch.IsBearishCHOCH())
          m_state=TREND_TRANSITION;
-      else if(m_bos->IsBullishBOS())
+      else if(m_bos.IsBullishBOS())
          m_state=TREND_BULLISH;
-      else if(m_bos->IsBearishBOS())
+      else if(m_bos.IsBearishBOS())
          m_state=TREND_BEARISH;
 
       return m_state;

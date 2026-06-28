@@ -29,7 +29,7 @@ public:
       if(m_structure == NULL)
          return false;
 
-      m_previous = m_structure->LastStructure();
+      m_previous = m_structure.LastStructure();
       return true;
    }
 
@@ -38,7 +38,7 @@ public:
       if(m_structure == NULL)
          return false;
 
-      EMarketStructure current = m_structure->LastStructure();
+      EMarketStructure current = m_structure.LastStructure();
 
       return (m_previous == STRUCTURE_LL || m_previous == STRUCTURE_LH) &&
              (current    == STRUCTURE_HL || current    == STRUCTURE_HH);
@@ -49,7 +49,7 @@ public:
       if(m_structure == NULL)
          return false;
 
-      EMarketStructure current = m_structure->LastStructure();
+      EMarketStructure current = m_structure.LastStructure();
 
       return (m_previous == STRUCTURE_HH || m_previous == STRUCTURE_HL) &&
              (current    == STRUCTURE_LH || current    == STRUCTURE_LL);

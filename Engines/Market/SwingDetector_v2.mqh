@@ -35,14 +35,14 @@ public:
 
    ESwingType Detect(const int index)
    {
-      if(m_engine==NULL || m_engine->Bars()<index+3)
+      if(m_engine==NULL || m_engine.Bars()<index+3)
          return SWING_NONE;
 
       SCandle c0,c1,c2;
 
-      if(!m_engine->Get(index,c0))   return SWING_NONE;
-      if(!m_engine->Get(index+1,c1)) return SWING_NONE;
-      if(!m_engine->Get(index+2,c2)) return SWING_NONE;
+      if(!m_engine.Get(index,c0))   return SWING_NONE;
+      if(!m_engine.Get(index+1,c1)) return SWING_NONE;
+      if(!m_engine.Get(index+2,c2)) return SWING_NONE;
 
       if(c1.High>c0.High && c1.High>c2.High)
       {

@@ -32,7 +32,7 @@ public:
       if(m_gate==NULL || m_trade==NULL)
          return false;
 
-      return m_gate->Allow(entry,coordinator);
+      return m_gate.Allow(entry,coordinator);
    }
 };
 

@@ -26,7 +26,7 @@ public:
       if(m_session==NULL)
          return false;
 
-      if(m_session->IsPaused())
+      if(m_session.IsPaused())
          return false;
 
       return decision.action!=DECISION_NONE;

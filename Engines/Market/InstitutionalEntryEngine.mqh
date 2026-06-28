@@ -24,7 +24,7 @@ public:
 
    bool Ready() const
    {
-      return (m_flow!=NULL && m_flow->Ready());
+      return (m_flow!=NULL && m_flow.Ready());
    }
 
    CEntryEngine &Entry()

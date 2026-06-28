@@ -46,7 +46,7 @@ public:
       if(!m_validator.Validate(builder.Plan()))
          return false;
 
-      return m_pipeline->Process(builder.Plan(),execution);
+      return m_pipeline.Process(builder.Plan(),execution);
    }
 };
 
