@@ -1,37 +1,40 @@
 #ifndef __ARES_MARKETENGINE_MQH__
 #define __ARES_MARKETENGINE_MQH__
 
-#include "../Data/MarketDataFeed.mqh"
+#include "SwingDetector.mqh"
+#include "StructureAnalyzer.mqh"
+#include "StructureContext.mqh"
+#include "StructureSignal.mqh"
 
 class CMarketEngine
 {
 private:
-   CMarketDataFeed m_feed;
-   bool            m_ready;
+   CSwingDetector      m_swings;
+   CStructureAnalyzer  m_analyzer;
+   CStructureContext   m_context;
+   SStructureSignal    m_signal;
 
 public:
-   CMarketEngine()
+   bool Initialize(CDataEngine &data)
    {
-      m_ready=false;
+      return m_swings.Initialize(data);
    }
 
-   bool Initialize(CDataEngine &engine,const int cacheSize=5000)
+   bool Update(const int index)
    {
-      m_ready=m_feed.Initialize(engine,cacheSize);
-      return m_ready;
+      ESwingType swing=m_swings.Detect(index);
+      if(swing==SWING_NONE)
+         return false;
+
+      m_analyzer.Update(swing,m_swings.LastSwingHigh(),m_swings.LastSwingLow());
+      m_context.Update(m_analyzer.Snapshot());
+      CStructureSignalBuilder::Build(m_context,m_signal);
+      return true;
    }
 
-   bool Update(const string symbol,const ENUM_TIMEFRAMES timeframe)
+   const SStructureSignal &Signal() const
    {
-      if(!m_ready)
-         return(false);
-
-      return m_feed.Refresh(symbol,timeframe);
-   }
-
-   int CachedBars() const
-   {
-      return m_feed.CachedBars();
+      return m_signal;
    }
 };
 
