@@ -3,12 +3,7 @@
 
 #include "PatternContext.mqh"
 
-enum EPatternType
-{
-   PATTERN_TYPE_NONE=0,
-   PATTERN_TYPE_CONTINUATION,
-   PATTERN_TYPE_REVERSAL
-};
+// EPatternType and EPatternDirection are defined in PatternContext.mqh
 
 class CPatternDetector
 {

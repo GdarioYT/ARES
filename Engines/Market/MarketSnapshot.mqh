@@ -14,7 +14,7 @@ struct SMarketSnapshot
 
    void FromState(const CMarketState &state)
    {
-      const SMarketContext &ctx = state.Context();
+      const SMarketContext ctx = state.Context();
 
       time = ctx.timestamp;
       bias = state.Bias();
