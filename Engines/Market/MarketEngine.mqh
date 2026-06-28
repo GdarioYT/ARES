@@ -39,8 +39,12 @@ public:
       
       SStructureState sState;
       sState.Type = m_structure.LastStructure();
-      sState.PriceHigh = m_structure.LastHigh();
-      sState.PriceLow = m_structure.LastLow();
+      if(sState.Type == STRUCTURE_HH || sState.Type == STRUCTURE_LH)
+         sState.Price = m_structure.LastHigh();
+      else if(sState.Type == STRUCTURE_LL || sState.Type == STRUCTURE_HL)
+         sState.Price = m_structure.LastLow();
+      else
+         sState.Price = 0.0;
       
       m_bos.Update(sState);
       m_choch.Update();
