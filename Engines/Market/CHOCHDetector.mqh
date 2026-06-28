@@ -1,43 +1,58 @@
 #ifndef __ARES_CHOCHDETECTOR_MQH__
 #define __ARES_CHOCHDETECTOR_MQH__
 
-#include "StructureState.mqh"
+#include "StructureAnalyzer.mqh"
+#include "BOSDetector.mqh"
 
 class CCHOCHDetector
 {
 private:
-   SStructureState m_previous;
-   bool            m_initialized;
+   CStructureAnalyzer *m_structure;
+   EStructureClass     m_previous;
 
 public:
    CCHOCHDetector()
    {
-      Reset();
+      m_structure=NULL;
+      m_previous=STRUCTURE_UNKNOWN;
    }
 
-   void Reset()
+   bool Initialize(CStructureAnalyzer &structure)
    {
-      m_previous = SStructureState();
-      m_initialized = false;
+      m_structure=&structure;
+      m_previous=STRUCTURE_UNKNOWN;
+      return true;
    }
 
-   bool Update(const SStructureState &state)
+   bool Update()
    {
-      if(!m_initialized)
-      {
-         m_previous = state;
-         m_initialized = true;
+      if(m_structure==NULL)
          return false;
-      }
 
-      bool choch =
-         (m_previous.Type == STRUCTURE_HH && state.Type == STRUCTURE_LL) ||
-         (m_previous.Type == STRUCTURE_HL && state.Type == STRUCTURE_LH) ||
-         (m_previous.Type == STRUCTURE_LL && state.Type == STRUCTURE_HH) ||
-         (m_previous.Type == STRUCTURE_LH && state.Type == STRUCTURE_HL);
+      m_previous=m_structure->LastStructure();
+      return true;
+   }
 
-      m_previous = state;
-      return choch;
+   bool IsBullishCHOCH() const
+   {
+      if(m_structure==NULL)
+         return false;
+
+      EStructureClass current=m_structure->LastStructure();
+
+      return (m_previous==STRUCTURE_LL || m_previous==STRUCTURE_LH) &&
+             (current==STRUCTURE_HL || current==STRUCTURE_HH);
+   }
+
+   bool IsBearishCHOCH() const
+   {
+      if(m_structure==NULL)
+         return false;
+
+      EStructureClass current=m_structure->LastStructure();
+
+      return (m_previous==STRUCTURE_HH || m_previous==STRUCTURE_HL) &&
+             (current==STRUCTURE_LH || current==STRUCTURE_LL);
    }
 };
 

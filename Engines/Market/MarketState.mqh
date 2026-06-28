@@ -1,43 +1,68 @@
 #ifndef __ARES_MARKETSTATE_MQH__
 #define __ARES_MARKETSTATE_MQH__
 
-#include "StructureSignal.mqh"
+#include "MarketContext.mqh"
 
 enum EMarketBias
 {
-   MARKET_NEUTRAL=0,
-   MARKET_BULLISH,
-   MARKET_BEARISH
+   MARKET_BIAS_NEUTRAL = 0,
+   MARKET_BIAS_BULLISH,
+   MARKET_BIAS_BEARISH
 };
 
-struct SMarketState
+class CMarketState
 {
-   EMarketBias Bias;
-   bool ValidStructure;
-   bool Breakout;
+private:
+   SMarketContext m_context;
+   EMarketBias    m_bias;
 
-   SMarketState()
-   {
-      Bias=MARKET_NEUTRAL;
-      ValidStructure=false;
-      Breakout=false;
-   }
-};
-
-class CMarketStateBuilder
-{
 public:
-   static void Build(const SStructureSignal &signal,SMarketState &state)
+   CMarketState()
    {
-      state=SMarketState();
+      Reset();
+   }
 
-      if(signal.Bias==BIAS_BULLISH)
-         state.Bias=MARKET_BULLISH;
-      else if(signal.Bias==BIAS_BEARISH)
-         state.Bias=MARKET_BEARISH;
+   void Reset()
+   {
+      m_context.Reset();
+      m_bias = MARKET_BIAS_NEUTRAL;
+   }
 
-      state.ValidStructure=(signal.Bias!=BIAS_NEUTRAL);
-      state.Breakout=signal.HasBOS;
+   void Update(const SMarketContext &context)
+   {
+      m_context = context;
+
+      if(context.bullishBOS || context.bullishCHOCH)
+         m_bias = MARKET_BIAS_BULLISH;
+      else if(context.bearishBOS || context.bearishCHOCH)
+         m_bias = MARKET_BIAS_BEARISH;
+      else
+         m_bias = MARKET_BIAS_NEUTRAL;
+   }
+
+   const SMarketContext &Context() const
+   {
+      return m_context;
+   }
+
+   EMarketBias Bias() const
+   {
+      return m_bias;
+   }
+
+   bool IsBullish() const
+   {
+      return m_bias == MARKET_BIAS_BULLISH;
+   }
+
+   bool IsBearish() const
+   {
+      return m_bias == MARKET_BIAS_BEARISH;
+   }
+
+   bool IsNeutral() const
+   {
+      return m_bias == MARKET_BIAS_NEUTRAL;
    }
 };
 

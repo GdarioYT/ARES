@@ -1,40 +1,58 @@
 #ifndef __ARES_MARKETENGINE_MQH__
 #define __ARES_MARKETENGINE_MQH__
 
-#include "SwingDetector.mqh"
+#include "../Data/DataEngine.mqh"
 #include "StructureAnalyzer.mqh"
-#include "StructureContext.mqh"
-#include "StructureSignal.mqh"
+#include "BOSDetector.mqh"
+#include "CHOCHDetector.mqh"
 
 class CMarketEngine
 {
 private:
-   CSwingDetector      m_swings;
-   CStructureAnalyzer  m_analyzer;
-   CStructureContext   m_context;
-   SStructureSignal    m_signal;
+   CDataEngine        *m_data;
+   CStructureAnalyzer  m_structure;
+   CBOSDetector        m_bos;
+   CCHOCHDetector      m_choch;
 
 public:
+   CMarketEngine()
+   {
+      m_data=NULL;
+   }
+
    bool Initialize(CDataEngine &data)
    {
-      return m_swings.Initialize(data);
+      m_data=&data;
+
+      if(!m_structure.Initialize(data))
+         return false;
+
+      m_bos.Initialize(m_structure);
+      m_choch.Initialize(m_structure);
+
+      return true;
    }
 
    bool Update(const int index)
    {
-      ESwingType swing=m_swings.Detect(index);
-      if(swing==SWING_NONE)
-         return false;
-
-      m_analyzer.Update(swing,m_swings.LastSwingHigh(),m_swings.LastSwingLow());
-      m_context.Update(m_analyzer.Snapshot());
-      CStructureSignalBuilder::Build(m_context,m_signal);
+      m_structure.Analyze(index);
+      m_choch.Update();
       return true;
    }
 
-   const SStructureSignal &Signal() const
+   CStructureAnalyzer &Structure()
    {
-      return m_signal;
+      return m_structure;
+   }
+
+   CBOSDetector &BOS()
+   {
+      return m_bos;
+   }
+
+   CCHOCHDetector &CHOCH()
+   {
+      return m_choch;
    }
 };
 

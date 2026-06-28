@@ -5,28 +5,28 @@
 
 struct SMarketSnapshot
 {
-   SMarketState State;
-   datetime     Timestamp;
-   double       LastPrice;
+   datetime time;
+   EMarketBias bias;
+   ETrendState trend;
+   EStructureClass structure;
+   ELiquidityEvent liquidity;
+   double confidence;
 
-   SMarketSnapshot()
+   void FromState(const CMarketState &state)
    {
-      Timestamp=0;
-      LastPrice=0.0;
+      const SMarketContext &ctx = state.Context();
+
+      time = ctx.timestamp;
+      bias = state.Bias();
+      trend = ctx.trend;
+      structure = ctx.structure;
+      liquidity = ctx.liquidity;
+      confidence = ctx.confidence;
    }
-};
 
-class CMarketSnapshotBuilder
-{
-public:
-   static void Build(const SMarketState &state,
-                     const datetime timestamp,
-                     const double lastPrice,
-                     SMarketSnapshot &snapshot)
+   bool IsValid() const
    {
-      snapshot.State=state;
-      snapshot.Timestamp=timestamp;
-      snapshot.LastPrice=lastPrice;
+      return time != 0;
    }
 };
 
