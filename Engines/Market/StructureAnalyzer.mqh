@@ -2,11 +2,13 @@
 #define __ARES_STRUCTUREANALYZER_MQH__
 
 #include "../Data/DataEngine.mqh"
+#include "SwingDetector.mqh"
 
 class CStructureAnalyzer
 {
 private:
-   CDataEngine *m_engine;
+   CDataEngine     *m_engine;
+   CSwingDetector   m_detector;
 
 public:
    CStructureAnalyzer()
@@ -17,7 +19,7 @@ public:
    bool Initialize(CDataEngine &engine)
    {
       m_engine=&engine;
-      return(true);
+      return m_detector.Initialize(engine);
    }
 
    bool IsReady() const
@@ -25,14 +27,22 @@ public:
       return(m_engine!=NULL && m_engine->Bars()>=3);
    }
 
-   bool GetLastThree(SCandle &c0,SCandle &c1,SCandle &c2) const
+   ESwingType Analyze(const int index)
    {
       if(!IsReady())
-         return(false);
+         return SWING_NONE;
 
-      return m_engine->Get(0,c0)
-          && m_engine->Get(1,c1)
-          && m_engine->Get(2,c2);
+      return m_detector.Detect(index);
+   }
+
+   double LastSwingHigh() const
+   {
+      return m_detector.LastSwingHigh();
+   }
+
+   double LastSwingLow() const
+   {
+      return m_detector.LastSwingLow();
    }
 };
 
