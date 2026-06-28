@@ -43,7 +43,7 @@ public:
 
       // Run Pattern Engine
       SPatternContext pContext;
-      SMarketSnapshot snapshot;
+      SMarketSnapshot snapshot = {};
       pContext.FromMarket(snapshot);
       pContext.valid = true; // Force validation for testing data flow
       pContext.score = 1.0;
