@@ -48,13 +48,16 @@ public:
    {
       if(!pos.valid) return false;
 
+      // Reseleccionar la posición para que las llamadas a PositionGet* sean válidas
+      if(!PositionSelectByTicket(pos.ticket)) return false;
+
       // Solo activar si estamos por encima del umbral de activación
       double currentR = pos.CurrentR();
       if(currentR < m_activationR) return false;
 
       if(pos.riskDistance <= 0) return false;
 
-      string symbol = PositionGetString(POSITION_SYMBOL);
+      string symbol = _Symbol; // Portfolio solo gestiona el símbolo actual
 
       // Calcular el nuevo SL basado en trailing: precio actual - (trailR * riskDistance)
       double newSL = 0.0;

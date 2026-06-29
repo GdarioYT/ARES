@@ -48,10 +48,13 @@ public:
       // Si ya aplicamos BE o la posición no es válida, salir
       if(!pos.valid || pos.breakEvenDone) return false;
 
+      // Reseleccionar la posición para que las llamadas a PositionGet* sean válidas
+      if(!PositionSelectByTicket(pos.ticket)) return false;
+
       // Verificar que tenemos suficiente beneficio (>= triggerR)
       if(pos.CurrentR() < m_triggerR) return false;
 
-      string symbol = PositionGetString(POSITION_SYMBOL);
+      string symbol = _Symbol; // Portfolio solo gestiona posiciones del símbolo actual
       double point  = SymbolInfoDouble(symbol, SYMBOL_POINT);
       double buffer = m_bufferPips * point * 10; // convertir pips a precio
 

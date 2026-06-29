@@ -1,27 +1,29 @@
 #ifndef __ARES_EXECUTIONCONTEXT_MQH__
 #define __ARES_EXECUTIONCONTEXT_MQH__
 
-#include "../PortFolio/PortfolioContext.mqh"
 #include "../Decision/DecisionContext.mqh"
 
+//+------------------------------------------------------------------+
+//| SExecutionContext                                                  |
+//| Contexto de ejecución — contiene la decisión lista para enviar   |
+//| al broker. Generado por Pipeline después de pasar Guardian.      |
+//+------------------------------------------------------------------+
 struct SExecutionContext
 {
-   SPortfolioContext portfolio;
    SDecisionContext decision;
 
-   bool execute;
+   bool   execute;
    double volume;
    double stopLoss;
    double takeProfit;
 
    void Reset()
    {
-      portfolio.Reset();
       decision.Reset();
-      execute=false;
-      volume=0.0;
-      stopLoss=0.0;
-      takeProfit=0.0;
+      execute   = false;
+      volume    = 0.0;
+      stopLoss  = 0.0;
+      takeProfit= 0.0;
    }
 };
 

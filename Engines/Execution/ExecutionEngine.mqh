@@ -53,8 +53,16 @@ public:
 
       m_trade.SetExpertMagicNumber(m_magicNumber);
       m_trade.SetDeviationInPoints(m_slippagePoints);
-      m_trade.SetTypeFilling(ORDER_FILLING_IOC);   // Modo compatible con mayoría de brokers
-      m_trade.SetAsyncMode(false);                  // Esperar confirmación del broker
+      m_trade.SetAsyncMode(false); // Esperar confirmación del broker
+
+      // Detectar automáticamente el modo de filling soportado por el broker
+      uint fillingMode = (uint)SymbolInfoInteger(_Symbol, SYMBOL_FILLING_MODE);
+      if((fillingMode & ORDER_FILLING_IOC) != 0)
+         m_trade.SetTypeFilling(ORDER_FILLING_IOC);
+      else if((fillingMode & ORDER_FILLING_FOK) != 0)
+         m_trade.SetTypeFilling(ORDER_FILLING_FOK);
+      else
+         m_trade.SetTypeFilling(ORDER_FILLING_RETURN); // Fallback para todos los brokers
 
       m_initialized = true;
       Print("[ARES][Execution] Motor inicializado. Magic: ", m_magicNumber,
