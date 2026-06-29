@@ -36,6 +36,10 @@ public:
    {
       if(m_manager == NULL) return false;
 
+      // --- FASE 0: GESTIÓN DE POSICIONES ABIERTAS ---
+      // Aplicar Break Even y Trailing Stop antes de buscar nuevas señales
+      m_manager.Portfolio().Monitor();
+
       // Update MarketEngine with the latest closed candle
       m_manager.Market().Update(1);
 

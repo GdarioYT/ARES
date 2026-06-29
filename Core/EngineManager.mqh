@@ -44,6 +44,9 @@ public:
       if(!m_execution.Initialize(20260629, 10))
          return false;
 
+      if(!m_portfolio.Initialize(20260629))
+         return false;
+
       return true;
    }
 
