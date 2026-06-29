@@ -160,6 +160,41 @@ public:
                   if(passedGuardian)
                   {
                      Print("[ARES] >>> TRADE LISTO PARA EJECUCION <<<");
+
+                     // --- FASE 5: EJECUCION REAL ---
+                     SExecutionContext eCtx;
+                     eCtx.Reset();
+                     eCtx.decision = dCtx;
+
+                     bool prepared = m_manager.Execution().Prepare(
+                        eCtx,
+                        dCtx.lotSize,
+                        dCtx.stopLoss,
+                        dCtx.takeProfit
+                     );
+
+                     if(prepared)
+                     {
+                        SExecutionReport report;
+                        bool sent = m_manager.Execution().SendOrder(eCtx, report);
+
+                        if(sent)
+                        {
+                           Print("[ARES] ✅ ORDEN EJECUTADA. Ticket: #", report.ticket,
+                                 " | Entry: ", DoubleToString(report.entryPrice, _Digits),
+                                 " | Vol: ",   DoubleToString(report.volume, 2),
+                                 " | SL: ",    DoubleToString(report.stopLoss, _Digits),
+                                 " | TP: ",    DoubleToString(report.takeProfit, _Digits));
+                        }
+                        else
+                        {
+                           Print("[ARES] ❌ FALLO EN ENVIO DE ORDEN.");
+                        }
+                     }
+                     else
+                     {
+                        Print("[ARES] ERROR: Prepare() falló en ExecutionEngine.");
+                     }
                   }
                   else
                   {

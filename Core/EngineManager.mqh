@@ -41,6 +41,9 @@ public:
       if(!m_pattern.Initialize(m_data))
          return false;
 
+      if(!m_execution.Initialize(20260629, 10))
+         return false;
+
       return true;
    }
 
