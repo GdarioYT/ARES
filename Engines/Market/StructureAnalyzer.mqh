@@ -27,10 +27,10 @@ public:
       Reset();
    }
 
-   bool Initialize(CDataEngine &data)
+   bool Initialize(CDataEngine &data, const int swingLookback = 2)
    {
       Reset();
-      return m_swing.Initialize(data);
+      return m_swing.Initialize(data, swingLookback);
    }
 
    void Reset()

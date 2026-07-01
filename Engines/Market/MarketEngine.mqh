@@ -20,11 +20,11 @@ public:
       m_data=NULL;
    }
 
-   bool Initialize(CDataEngine &data)
+   bool Initialize(CDataEngine &data, const int swingLookback = 2)
    {
-      m_data=&data;
+      m_data = &data;
 
-      if(!m_structure.Initialize(data))
+      if(!m_structure.Initialize(data, swingLookback))
          return false;
 
       m_bos.Initialize(m_structure);

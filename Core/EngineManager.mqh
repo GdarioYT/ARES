@@ -35,7 +35,7 @@ public:
       if(!m_data.Initialize(InpHistoryBars))
          return false;
 
-      if(!m_market.Initialize(m_data))
+      if(!m_market.Initialize(m_data, InpSwingLookback))
          return false;
 
       if(!m_pattern.Initialize(m_data))

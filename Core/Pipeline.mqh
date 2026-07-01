@@ -7,11 +7,15 @@
 #include "../Engines/Market/DisplacementDetector.mqh"
 #include "../Engines/Market/PremiumDiscountDetector.mqh"
 #include "../Engines/Market/MitigationDetector.mqh"
+#include "../Engines/Market/SessionFilter.mqh"
 
 class CPipeline
 {
 private:
    CEngineManager *m_manager;
+
+   // Filtro de sesión
+   CSessionFilter m_session;
 
    // Detectores independientes de evidencia
    CEqualHighEqualLowDetector m_eqhl;
@@ -28,7 +32,16 @@ public:
 
    bool Initialize(CEngineManager &manager)
    {
-      m_manager=&manager;
+      m_manager = &manager;
+
+      // Configurar filtro de sesión con los inputs del usuario
+      m_session.SetEnabled(InpSessionFilterOn);
+      m_session.SetOffset(InpServerUTCOffset);
+
+      Print("[ARES][Pipeline] Sesion: ", InpSessionFilterOn ? "ACTIVA" : "DESACTIVADA",
+            " | Offset UTC: ", InpServerUTCOffset,
+            " | Swing lookback: ", InpSwingLookback);
+
       return true;
    }
 
@@ -37,8 +50,13 @@ public:
       if(m_manager == NULL) return false;
 
       // --- FASE 0: GESTIÓN DE POSICIONES ABIERTAS ---
-      // Aplicar Break Even y Trailing Stop antes de buscar nuevas señales
+      // Aplicar Break Even y Trailing Stop siempre (independiente de sesión)
       m_manager.Portfolio().Monitor();
+
+      // --- FASE 0.5: FILTRO DE SESIÓN ---
+      // Solo buscar nuevas señales en Londres y Nueva York
+      if(!m_session.IsActiveSession())
+         return true; // No operamos, pero no es un error
 
       // Update MarketEngine with the latest closed candle
       m_manager.Market().Update(1);
