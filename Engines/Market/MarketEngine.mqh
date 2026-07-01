@@ -13,16 +13,19 @@ private:
    CStructureAnalyzer  m_structure;
    CBOSDetector        m_bos;
    CCHOCHDetector      m_choch;
+   datetime            m_lastBarTime;
 
 public:
    CMarketEngine()
    {
-      m_data=NULL;
+      m_data        = NULL;
+      m_lastBarTime = 0;
    }
 
    bool Initialize(CDataEngine &data, const int swingLookback = 2)
    {
-      m_data = &data;
+      m_data        = &data;
+      m_lastBarTime = 0;
 
       if(!m_structure.Initialize(data, swingLookback))
          return false;
@@ -35,8 +38,17 @@ public:
 
    bool Update(const int index)
    {
+      if(m_data == NULL) return false;
+
+      // Guard: procesar cada barra solo UNA VEZ por tick
+      // Sin esto, la misma vela cerrada se analizaba en cada tick → BOS spam
+      SCandle c;
+      if(!m_data.Get(index, c)) return false;
+      if(c.Time == m_lastBarTime) return true;
+      m_lastBarTime = c.Time;
+
       m_structure.Analyze(index);
-      
+
       SStructureState sState;
       sState.Type = m_structure.LastStructure();
       if(sState.Type == STRUCTURE_HH || sState.Type == STRUCTURE_LH)
@@ -45,7 +57,7 @@ public:
          sState.Price = m_structure.LastLow();
       else
          sState.Price = 0.0;
-      
+
       m_bos.Update(sState);
       m_choch.Update();
       return true;

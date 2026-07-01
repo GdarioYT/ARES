@@ -7,10 +7,13 @@ input int             InpHistoryBars = 5000;
 
 // --- Filtro de Sesión ---
 // Offset del servidor MT5 respecto a UTC.
-// Ejemplo: Si tu broker usa UTC+2, pon 2. Si usa UTC+3, pon 3.
-// Para verificarlo: compara la hora del servidor en MT5 con UTC.
-input int  InpServerUTCOffset = 2;     // Offset UTC del servidor del broker
-input bool InpSessionFilterOn = true;  // true = solo opera en Londres/NY
+// Brokers europeos (ICMarkets, Pepperstone, etc.):
+//   UTC+2 en invierno (oct-mar)
+//   UTC+3 en verano/DST (mar-oct)  ← MARZO 2026 usa este
+// Para verificar: compara la hora del servidor MT5 con tu reloj local.
+input int  InpServerUTCOffset   = 3;    // FIX: UTC+3 para brokers europeos en verano
+input bool InpSessionFilterOn   = true; // true = solo opera en Londres/NY
+input bool InpSessionDebugMode  = false; // true = log de sesión en cada señal (solo para debug)
 
 // --- Swing Detector ---
 // Número de velas a cada lado del pivot para validar un swing.

@@ -2,42 +2,53 @@
 #define __ARES_SESSIONFILTER_MQH__
 
 // ============================================================================
-// ARES - SessionFilter.mqh
+// ARES - SessionFilter.mqh  (v2 - fix offset UTC+3)
 // Filtro de sesión de mercado. Solo permite operar durante las horas de
 // mayor liquidez institucional: Londres y Nueva York.
 //
-// Horas en UTC (el servidor MT5 suele usar UTC o UTC+2/3):
+// IMPORTANTE sobre el offset del broker:
+//   - Brokers europeos usan UTC+2 en invierno, UTC+3 en verano (DST)
+//   - Marzo 2026: ya está en horario de verano → UTC+3
+//   - Para evitar errores: usa InpServerUTCOffset=3 en primavera/verano
+//
+// Sesiones en UTC:
 //   Londres:    07:00 - 16:00 UTC
 //   Nueva York: 13:00 - 21:00 UTC
-//   Overlap:    13:00 - 16:00 UTC (mayor volumen del día)
-//
-// NOTA: Si tu broker usa UTC+2 (hora europea sin DST), ajusta con m_offsetHours.
 // ============================================================================
 class CSessionFilter
 {
 private:
-   int  m_londonOpen;   // Hora UTC apertura Londres
-   int  m_londonClose;  // Hora UTC cierre Londres
-   int  m_nyOpen;       // Hora UTC apertura NY
-   int  m_nyClose;      // Hora UTC cierre NY
-   int  m_offsetHours;  // Offset del servidor respecto a UTC (ej: 2 para UTC+2)
+   int  m_londonOpen;
+   int  m_londonClose;
+   int  m_nyOpen;
+   int  m_nyClose;
+   int  m_offsetHours;
    bool m_enabled;
+   bool m_debugMode;
+
+   int ServerHourToUTC(const int serverHour) const
+   {
+      int utc = serverHour - m_offsetHours;
+      if(utc < 0)  utc += 24;
+      if(utc > 23) utc -= 24;
+      return utc;
+   }
 
 public:
    CSessionFilter()
    {
-      // Valores por defecto: UTC base
       m_londonOpen  = 7;
       m_londonClose = 16;
       m_nyOpen      = 13;
       m_nyClose     = 21;
-      m_offsetHours = 0; // Ajustar según broker
+      m_offsetHours = 3;    // FIX: default UTC+3 (verano europeo, marzo-octubre)
       m_enabled     = true;
+      m_debugMode   = false;
    }
 
-   //--- Configuración
-   void SetEnabled(const bool enabled)      { m_enabled = enabled; }
-   void SetOffset(const int offsetHours)    { m_offsetHours = offsetHours; }
+   void SetEnabled(const bool enabled)   { m_enabled = enabled; }
+   void SetOffset(const int offset)      { m_offsetHours = offset; }
+   void SetDebugMode(const bool debug)   { m_debugMode = debug; }
 
    void SetLondon(const int open, const int close)
    {
@@ -51,51 +62,49 @@ public:
       m_nyClose = close;
    }
 
-   //--- Evaluación: ¿Estamos en sesión activa?
    bool IsActiveSession(const datetime time = 0) const
    {
-      if(!m_enabled) return true; // Si está desactivado, siempre permite
+      if(!m_enabled) return true;
 
       datetime t = (time == 0) ? TimeCurrent() : time;
 
       MqlDateTime dt;
       TimeToStruct(t, dt);
 
-      // Convertir hora del servidor a UTC
-      int hourUTC = dt.hour - m_offsetHours;
-      if(hourUTC < 0)  hourUTC += 24;
-      if(hourUTC > 23) hourUTC -= 24;
+      int hourUTC = ServerHourToUTC(dt.hour);
 
-      // ¿Estamos en Londres?
-      bool isLondon = (hourUTC >= m_londonOpen && hourUTC < m_londonClose);
+      bool isLondon  = (hourUTC >= m_londonOpen  && hourUTC < m_londonClose);
+      bool isNewYork = (hourUTC >= m_nyOpen       && hourUTC < m_nyClose);
 
-      // ¿Estamos en Nueva York?
-      bool isNewYork = (hourUTC >= m_nyOpen && hourUTC < m_nyClose);
-
-      // No operar los lunes antes de las 8 UTC (apertura asiática sin liquidez)
+      // Protección lunes asiático y cierre de semana
       bool isMondayAsian = (dt.day_of_week == 1 && hourUTC < 8);
-
-      // No operar los viernes después de las 20 UTC (cierre de semana)
       bool isFridayClose = (dt.day_of_week == 5 && hourUTC >= 20);
 
-      if(isMondayAsian || isFridayClose) return false;
+      bool active = (isLondon || isNewYork) && !isMondayAsian && !isFridayClose;
 
-      return isLondon || isNewYork;
+      // Log de debug — solo cuando cambia el estado (para no spamear)
+      if(m_debugMode)
+      {
+         Print("[ARES][Session] Servidor: ", dt.hour, "h | UTC: ", hourUTC,
+               "h | Offset: ", m_offsetHours,
+               " | Londres: ", isLondon, " | NY: ", isNewYork,
+               " | ACTIVA: ", active);
+      }
+
+      return active;
    }
 
-   //--- Info para logs
    string CurrentSessionName() const
    {
       datetime t = TimeCurrent();
       MqlDateTime dt;
       TimeToStruct(t, dt);
-      int hourUTC = dt.hour - m_offsetHours;
-      if(hourUTC < 0)  hourUTC += 24;
+      int hourUTC = ServerHourToUTC(dt.hour);
 
       bool isLondon = (hourUTC >= m_londonOpen  && hourUTC < m_londonClose);
-      bool isNY     = (hourUTC >= m_nyOpen      && hourUTC < m_nyClose);
+      bool isNY     = (hourUTC >= m_nyOpen       && hourUTC < m_nyClose);
 
-      if(isLondon && isNY) return "OVERLAP";
+      if(isLondon && isNY) return "OVERLAP (Lon+NY)";
       if(isLondon)         return "LONDON";
       if(isNY)             return "NEW YORK";
       return "CLOSED";

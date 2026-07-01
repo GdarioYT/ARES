@@ -37,10 +37,12 @@ public:
       // Configurar filtro de sesión con los inputs del usuario
       m_session.SetEnabled(InpSessionFilterOn);
       m_session.SetOffset(InpServerUTCOffset);
+      m_session.SetDebugMode(InpSessionDebugMode);
 
       Print("[ARES][Pipeline] Sesion: ", InpSessionFilterOn ? "ACTIVA" : "DESACTIVADA",
-            " | Offset UTC: ", InpServerUTCOffset,
-            " | Swing lookback: ", InpSwingLookback);
+            " | Offset UTC+", InpServerUTCOffset,
+            " | Swing lookback: ", InpSwingLookback,
+            " | Debug sesion: ", InpSessionDebugMode);
 
       return true;
    }
